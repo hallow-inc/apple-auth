@@ -9,6 +9,21 @@ const AppleClientSecret = require("./token");
 const crypto = require('crypto');
 const qs = require('querystring');
 
+class AppleResponseError extends Error {
+    constructor(error) {
+        if (!(error.response && error.response.data)) {
+            super(err.toString());
+            return;
+        }
+
+        const response = error.response.data;
+        super(`[AppleAuth Error] ${response.error}: ${response.error_description}`);
+        this.type = response.error;
+        this.description = response.error_description;
+        this.cause = error;
+    }
+}
+
 class AppleAuth {
     
     /**
@@ -92,8 +107,8 @@ class AppleAuth {
                         url: 'https://appleid.apple.com/auth/token'
                     }).then((response) => {
                         resolve(response.data);
-                    }).catch((response) => {
-                        reject("AppleAuth Error - An error occurred while getting response from Apple's servers: " + response);
+                    }).catch((err) => {
+                        reject(new AppleResponseError(err));
                     });
                 }).catch((err) => {
                     reject(err);
@@ -128,7 +143,7 @@ class AppleAuth {
                     }).then((response) => {
                         resolve(response.data);
                     }).catch((err) => {
-                        reject("AppleAuth Error - An error occurred while getting response from Apple's servers: " + err);
+                        reject(new AppleResponseError(err));
                     });
                 }).catch((err) => {
                     reject(err);
