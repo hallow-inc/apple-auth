@@ -55,10 +55,7 @@ class AppleAuth {
         this._state = "";
         this._tokenGenerator = new AppleClientSecret(this._config, privateKey, privateKeyMethod);
         this.loginURL = this.loginURL.bind(this);
-        this.axios = axios.create({
-            headers: { 'content-type': 'application/x-www-form-urlencoded' },
-            httpsAgent: new https.Agent({ keepAlive: true }),
-        })
+        this.httpsAgent = new https.Agent({ keepAlive: true }) 
     }
 
     /**
@@ -105,9 +102,12 @@ class AppleAuth {
                         client_id: this._config.client_id,
                         client_secret: token,
                     };
-                    this.axios.post({
+                    axios({
+                        method: 'POST',
                         data: qs.stringify(payload),
                         url: 'https://appleid.apple.com/auth/token',
+                        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                        httpsAgent: this.httpsAgent,
                     }).then((response) => {
                         resolve(response.data);
                     }).catch((err) => {
@@ -138,9 +138,12 @@ class AppleAuth {
                         client_id: this._config.client_id,
                         client_secret: token,
                     };
-                    this.axios.post({
+                    axios({
+                        method: 'POST',
                         data: qs.stringify(payload),
                         url: 'https://appleid.apple.com/auth/token',
+                        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                        httpsAgent: this.httpsAgent,
                     }).then((response) => {
                         resolve(response.data);
                     }).catch((err) => {
