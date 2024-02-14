@@ -44,7 +44,7 @@ class AppleAuth {
 
     axios = axios.create({
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        httpsAgent: new https.Agent({ keepAlive: true }),
+        // httpsAgent: new https.Agent({ keepAlive: true }),
     })
 
     constructor(config, privateKey, privateKeyMethod) {
