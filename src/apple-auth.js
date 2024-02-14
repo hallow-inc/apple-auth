@@ -42,7 +42,10 @@ class AppleAuth {
      * @param {string} privateKeyMethod - Private Key Method (can be either 'file' or 'text')
      */
 
-    httpsAgent = new https.Agent({ keepAlive: true })
+    axios = axios.create({
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        httpsAgent: new https.Agent({ keepAlive: true }),
+    })
 
     constructor(config, privateKey, privateKeyMethod) {
         if (typeof config == 'object') {
@@ -103,12 +106,9 @@ class AppleAuth {
                         client_id: this._config.client_id,
                         client_secret: token,
                     };
-                    axios({
-                        method: 'POST',
-                        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                    this.axios.post({
                         data: qs.stringify(payload),
                         url: 'https://appleid.apple.com/auth/token',
-                        httpsAgent: this.httpsAgent,
                     }).then((response) => {
                         resolve(response.data);
                     }).catch((err) => {
@@ -139,12 +139,9 @@ class AppleAuth {
                         client_id: this._config.client_id,
                         client_secret: token,
                     };
-                    axios({
-                        method: 'POST',
-                        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                    this.axios.post({
                         data: qs.stringify(payload),
                         url: 'https://appleid.apple.com/auth/token',
-                        httpsAgent: this.httpsAgent,
                     }).then((response) => {
                         resolve(response.data);
                     }).catch((err) => {
