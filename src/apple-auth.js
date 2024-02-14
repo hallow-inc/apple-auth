@@ -42,11 +42,6 @@ class AppleAuth {
      * @param {string} privateKeyMethod - Private Key Method (can be either 'file' or 'text')
      */
 
-    axios = axios.create({
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        // httpsAgent: new https.Agent({ keepAlive: true }),
-    })
-
     constructor(config, privateKey, privateKeyMethod) {
         if (typeof config == 'object') {
             if (Buffer.isBuffer(config)) {
@@ -60,6 +55,10 @@ class AppleAuth {
         this._state = "";
         this._tokenGenerator = new AppleClientSecret(this._config, privateKey, privateKeyMethod);
         this.loginURL = this.loginURL.bind(this);
+        this.axios = axios.create({
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            httpsAgent: new https.Agent({ keepAlive: true }),
+        })
     }
 
     /**
