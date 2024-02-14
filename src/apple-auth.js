@@ -8,6 +8,7 @@ const axios = require('axios');
 const AppleClientSecret = require("./token");
 const crypto = require('crypto');
 const qs = require('querystring');
+const https = require('https');
 
 class AppleResponseError extends Error {
     constructor(error) {
@@ -40,6 +41,8 @@ class AppleAuth {
      * @param {string} privateKeyLocation - Private Key Location / the key itself
      * @param {string} privateKeyMethod - Private Key Method (can be either 'file' or 'text')
      */
+
+    httpsAgent = new https.Agent({ keepAlive: true })
 
     constructor(config, privateKey, privateKeyMethod) {
         if (typeof config == 'object') {
@@ -104,7 +107,8 @@ class AppleAuth {
                         method: 'POST',
                         headers: { 'content-type': 'application/x-www-form-urlencoded' },
                         data: qs.stringify(payload),
-                        url: 'https://appleid.apple.com/auth/token'
+                        url: 'https://appleid.apple.com/auth/token',
+                        httpsAgent: this.httpsAgent,
                     }).then((response) => {
                         resolve(response.data);
                     }).catch((err) => {
@@ -139,7 +143,8 @@ class AppleAuth {
                         method: 'POST',
                         headers: { 'content-type': 'application/x-www-form-urlencoded' },
                         data: qs.stringify(payload),
-                        url: 'https://appleid.apple.com/auth/token'
+                        url: 'https://appleid.apple.com/auth/token',
+                        httpsAgent: this.httpsAgent,
                     }).then((response) => {
                         resolve(response.data);
                     }).catch((err) => {
