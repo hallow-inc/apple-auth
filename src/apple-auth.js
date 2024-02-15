@@ -13,7 +13,7 @@ const https = require('https');
 class AppleResponseError extends Error {
     constructor(error) {
         if (!(error.response && error.response.data)) {
-            super(err.toString());
+            super(error.toString());
             return;
         }
 
